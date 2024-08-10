@@ -233,36 +233,6 @@ require('lazy').setup({
   --
   -- Use `opts = {}` to force a plugin to be loaded.
   --
-
-  -- Here is a more advanced example where we pass configuration
-  -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
-  --    require('gitsigns').setup({ ... })
-  --
-  -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
-    on_attach = function(bufnr)
-      vim.keymap.set(
-        'n',
-        '<leader>gp',
-        require('gitsigns').prev_hunk,
-        { buffer = bufnr, desc = '[G]o to [P]revious Hunk' }
-      )
-      vim.keymap.set('n', '<leader>gn', require('gitsigns').next_hunk, { buffer = bufnr, desc = '[G]o to [N]ext Hunk' })
-      vim.keymap.set('n', '<leader>ph', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[P]review [H]unk' })
-      vim.keymap.set('n', '<leader>gh', require('gitsigns').reset_hunk, { buffer = bufnr, desc = 'Reset [H]unk' })
-    end,
-  },
-
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
@@ -303,15 +273,6 @@ require('lazy').setup({
   -- you do for a plugin at the top level, you can do for a dependency.
   --
   -- Use the `dependencies` key to specify the dependencies of a particular plugin
-  {
-    -- Add indentation guides even on blank lines
-    'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help indent_blankline.txt`
-    main = 'ibl',
-    config = function() require('ibl').setup() end,
-  },
-
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
 
@@ -438,11 +399,6 @@ require('lazy').setup({
     name = 'catppuccin',
     priority = 1000,
     config = function() vim.cmd.colorscheme 'catppuccin' end,
-  },
-  {
-    'windwp/nvim-autopairs',
-    event = 'InsertEnter',
-    opts = {},
   },
   'sealemar/vtl',
   { 'stevearc/dressing.nvim', opts = {} },
@@ -636,6 +592,24 @@ require('lazy').setup({
           },
         },
         tflint = {},
+        prettierd = {},
+        black = {},
+        eslint_d = {},
+        cssls = {},
+        docker_compose_language_service = {},
+        dockerls = {},
+        flake8 = {},
+        hadolint = {},
+        isort = {},
+        lemminx = {},
+        xmlformatter = {},
+        luacheck = {},
+        mypy = {},
+        pylsp = {},
+        rust_analyzer = {},
+        shfmt = {},
+        ['sql-formatter'] = {},
+        taplo = {},
         tsserver = {
           implicitProjectConfiguration = {
             checkJs = true,
@@ -655,7 +629,7 @@ require('lazy').setup({
           },
         },
         volar = {
-          filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+          filetypes = { 'javascriptreact', 'typescriptreact', 'vue' },
           init_options = {
             vue = {
               hybridMode = false,
@@ -736,13 +710,14 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
         javascript = { 'prettierd' },
         typescript = { 'prettierd' },
+        markdown = { 'markdownlint' },
         json = { 'prettierd' },
+        jsonc = { 'prettierd' },
         yaml = { 'prettierd' },
         sql = { 'sql_formatter' },
         sh = { 'shfmt' },
@@ -1010,9 +985,9 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 

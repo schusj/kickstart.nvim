@@ -7,6 +7,13 @@ return {
       local lint = require 'lint'
       lint.linters_by_ft = {
         markdown = { 'markdownlint' },
+        typescript = { 'eslint_d' },
+        javascript = { 'eslint_d' },
+        dockerfile = { 'hadolint' },
+        luacheck = { 'lua' },
+        flake8 = { 'python' },
+        mypy = { 'python' },
+        terraform = { 'tflint' },
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
