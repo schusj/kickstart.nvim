@@ -559,6 +559,10 @@ require('lazy').setup({
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
+      local mason_registry = require 'mason-registry'
+      local ts_plugin_path = mason_registry.get_package('vue-language-server'):get_install_path()
+        .. '/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin'
+
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --
@@ -611,8 +615,18 @@ require('lazy').setup({
         ['sql-formatter'] = {},
         taplo = {},
         tsserver = {
+          filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
           implicitProjectConfiguration = {
             checkJs = true,
+          },
+          init_options = {
+            plugins = {
+              {
+                name = '@vue/typescript-plugin',
+                location = ts_plugin_path,
+                languages = { 'typescript', 'vue' },
+              },
+            },
           },
           commands = {
             OrganizeImports = {
@@ -628,14 +642,7 @@ require('lazy').setup({
             },
           },
         },
-        volar = {
-          filetypes = { 'javascriptreact', 'typescriptreact', 'vue' },
-          init_options = {
-            vue = {
-              hybridMode = false,
-            },
-          },
-        },
+        volar = {},
         terraformls = {},
         graphql = {},
         ocamllsp = {},
@@ -715,6 +722,7 @@ require('lazy').setup({
         -- is found.
         javascript = { 'prettierd' },
         typescript = { 'prettierd' },
+        vue = { 'prettierd' },
         markdown = { 'markdownlint' },
         json = { 'prettierd' },
         jsonc = { 'prettierd' },
@@ -1037,27 +1045,27 @@ vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
 
 --
 -- lsp conflicts for vue
-local lsp_conficts, _ = pcall(vim.api.nvim_get_autocmds, { group = 'LspAttach_conflicts' })
-if not lsp_conficts then vim.api.nvim_create_augroup('LspAttach_conflicts', {}) end
-vim.api.nvim_create_autocmd('LspAttach', {
-  group = 'LspAttach_conflicts',
-  desc = 'prevent tsserver and volar competing',
-  callback = function(args)
-    if not (args.data and args.data.client_id) then return end
-    local active_clients = vim.lsp.get_clients()
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    if not client then return end
-    -- prevent tsserver and volar competing
-    if client.name == 'volar' then
-      for _, client_ in pairs(active_clients) do
-        -- stop tsserver if volar is already active
-        if client_.name == 'tsserver' then client_.stop() end
-      end
-    elseif client.name == 'tsserver' then
-      for _, client_ in pairs(active_clients) do
-        -- prevent tsserver from starting if volar is already active
-        if client_.name == 'volar' then client.stop() end
-      end
-    end
-  end,
-})
+-- local lsp_conficts, _ = pcall(vim.api.nvim_get_autocmds, { group = 'LspAttach_conflicts' })
+-- if not lsp_conficts then vim.api.nvim_create_augroup('LspAttach_conflicts', {}) end
+-- vim.api.nvim_create_autocmd('LspAttach', {
+--   group = 'LspAttach_conflicts',
+--   desc = 'prevent tsserver and volar competing',
+--   callback = function(args)
+--     if not (args.data and args.data.client_id) then return end
+--     local active_clients = vim.lsp.get_clients()
+--     local client = vim.lsp.get_client_by_id(args.data.client_id)
+--     if not client then return end
+--     -- prevent tsserver and volar competing
+--     if client.name == 'volar' then
+--       for _, client_ in pairs(active_clients) do
+--         -- stop tsserver if volar is already active
+--         if client_.name == 'tsserver' then client_.stop() end
+--       end
+--     elseif client.name == 'tsserver' then
+--       for _, client_ in pairs(active_clients) do
+--         -- prevent tsserver from starting if volar is already active
+--         if client_.name == 'volar' then client.stop() end
+--       end
+--     end
+--   end,
+-- })
