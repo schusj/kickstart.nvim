@@ -116,7 +116,17 @@ vim.opt.showmode = false
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.opt.clipboard = 'unnamedplus'
+vim.opt.clipboard = ''
+
+vim.g.clipboard = {
+  name = 'WslClipboard',
+  copy = { ['+'] = 'clip.exe', ['*'] = 'clip.exe' },
+  paste = {
+    ['+'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+    ['*'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+  },
+  cache_enabled = 0,
+}
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -192,6 +202,18 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
+
+-- sync with system clipboard on focus
+vim.api.nvim_create_autocmd({ 'FocusGained' }, {
+  pattern = { '*' },
+  command = [[call setreg("@", getreg("+"))]],
+})
+
+-- sync with system clipboard on focus
+vim.api.nvim_create_autocmd({ 'FocusLost' }, {
+  pattern = { '*' },
+  command = [[call setreg("+", getreg("@"))]],
+})
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -624,10 +646,48 @@ require('lazy').setup({
         isort = {},
         lemminx = {},
         xmlformatter = {},
+        java_language_server = {
+          handlers = {
+            ['client/registerCapability'] = function(err, result, ctx, config)
+              local registration = {
+                registrations = { result },
+              }
+              return vim.lsp.handlers['client/registerCapability'](err, registration, ctx, config)
+            end,
+          },
+        },
         luacheck = {},
         mypy = {},
         pylsp = {},
         rust_analyzer = {},
+        yamlls = {
+          settings = {
+            yaml = {
+              hover = true,
+              format = { enable = false },
+              customTags = {
+                '!fn',
+                '!And',
+                '!If sequence',
+                '!Not',
+                '!Equals sequence',
+                '!Or',
+                '!FindInMap sequence',
+                '!Base64',
+                '!Cidr',
+                '!Ref',
+                '!Ref Scalar',
+                '!Sub',
+                '!GetAtt',
+                '!GetAZs',
+                '!ImportValue',
+                '!Select',
+                '!Split',
+                '!Join sequence',
+              },
+            },
+          },
+        },
         shfmt = {},
         ['sql-formatter'] = {},
         taplo = {},
@@ -748,6 +808,7 @@ require('lazy').setup({
         yaml = { 'prettierd' },
         sql = { 'sql_formatter' },
         sh = { 'shfmt' },
+        tf = { 'terraformls' },
       },
     },
   },

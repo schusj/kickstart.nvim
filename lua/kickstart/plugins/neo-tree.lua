@@ -30,7 +30,10 @@ return {
           inputs.confirm(msg, function(confirmed)
             if not confirmed then return end
 
-            vim.fn.system { 'trash', vim.fn.fnameescape(path) }
+            local fname = vim.fn.fnameescape(path):gsub('\\[%[]', '[')
+
+            vim.system { 'trash', fname }
+            require('neo-tree.sources.manager').refresh(state.name)
             require('neo-tree.sources.manager').refresh(state.name)
           end)
         end,
@@ -53,7 +56,7 @@ return {
           inputs.confirm(msg, function(confirmed)
             if not confirmed then return end
             for _, node in ipairs(selected_nodes) do
-              vim.fn.system { 'trash', vim.fn.fnameescape(node.path) }
+              vim.fn.system { 'trash', vim.fn.shellescape(node.path) }
             end
             require('neo-tree.sources.manager').refresh(state.name)
           end)
