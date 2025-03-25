@@ -11,12 +11,14 @@ return {
         javascript = { 'eslint_d' },
         json = { 'eslint_d' },
         toml = { 'eslint_d' },
+        vue = { 'eslint_d' },
         yaml = { 'eslint_d' },
         dockerfile = { 'hadolint' },
         luacheck = { 'lua' },
         flake8 = { 'python' },
         mypy = { 'python' },
         terraform = { 'tflint' },
+        sh = { 'shellcheck' },
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,

@@ -212,6 +212,9 @@ if not vim.uv.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
+-- [[ Set codecompanion token path ]]
+vim.env['CODECOMPANION_TOKEN_PATH'] = vim.fn.expand '~/.config'
+
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -355,6 +358,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>f*', builtin.grep_string, { desc = '[S]earch current word' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
+      -- print 'hello'
+
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
@@ -401,6 +406,18 @@ require('lazy').setup({
     config = function() vim.cmd.colorscheme 'catppuccin' end,
   },
   'sealemar/vtl',
+  {
+    'olimorris/codecompanion.nvim',
+    dependencies = {
+      'hrsh7th/nvim-cmp',
+    },
+    opts = {
+      opts = {
+        log_level = 'DEBUG',
+      },
+    },
+  },
+  'github/copilot.vim',
   { 'stevearc/dressing.nvim', opts = {} },
   { 'rcarriga/nvim-notify', opts = {} },
   { 'catgoose/vue-goto-definition.nvim', event = 'BufReadPre' },
@@ -644,6 +661,8 @@ require('lazy').setup({
         },
         volar = {},
         terraformls = {},
+        markdownlint = {},
+        shellcheck = {},
         graphql = {},
         ocamllsp = {},
         -- html = { filetypes = { 'html', 'twig', 'hbs'} },
@@ -723,7 +742,7 @@ require('lazy').setup({
         javascript = { 'prettierd' },
         typescript = { 'prettierd' },
         vue = { 'prettierd' },
-        markdown = { 'markdownlint' },
+        markdown = { 'prettierd' },
         json = { 'prettierd' },
         jsonc = { 'prettierd' },
         yaml = { 'prettierd' },
